@@ -266,9 +266,9 @@ tf.summary.scalar('loss', cross_entropy)
 myind = tf.cast(tf.argmax(y_test,1),tf.float64)
 myindTrue = tf.argmax(y_input,1)
 #myacc = tf.equal(myind,myindTrue)
-myrealloss = -tf.reduce_sum(y_input * tf.log(y_test), reduction_indices=[1])
+myrealloss = -tf.reduce_mean(y_input * tf.log(y_test), reduction_indices=[1])
 #myloss = tf.reduce_mean(tf.losses.sparse_softmax_cross_entropy_with_logits(logits=myind,labels=myindTrue)) # calculate loss between prediction and actual
-train_step = tf.train.AdamOptimizer(learning_rate=0.01).minimize(myrealloss, name="gradDescent")
+train_step = tf.train.AdamOptimizer(learning_rate=0.001).minimize(myrealloss, name="gradDescent")
 # switched adam to gradientdescent and removed epsilon of e-3
 
 
@@ -331,8 +331,8 @@ with tf.Session(config=config) as sess:
             [summary2, acc, res] = sess.run([merge, accuracy, y_test], feed_dict={x: xans2, y_input: yans2})
             train_writer2.add_summary(summary2, epochs)
             if epochs % 100 == 0:
-                [summaryOut, train_accuracy, something, true_val, c, myacc2, ind, ind2, yin] = sess.run([merge, accuracy, y_test, y_input,
-                                            cross_entropy, myacc, myind, myindTrue, y_input], feed_dict={x: xans, y_input: yans})
+                [summaryOut, train_accuracy, something, true_val, c, ind, ind2, yin] = sess.run([merge, accuracy, y_test, y_input,
+                                            cross_entropy, myind, myindTrue, y_input], feed_dict={x: xans, y_input: yans})
                 if c < loss:
                   #saver.save(sess, './my_test_model', global_step=epochs)
                   #np.savetxt("output_fourier_check.csv", true_val, delimiter=",")
