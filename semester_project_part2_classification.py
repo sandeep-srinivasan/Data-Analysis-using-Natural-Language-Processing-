@@ -266,8 +266,9 @@ tf.summary.scalar('loss', cross_entropy)
 myind = tf.cast(tf.argmax(y_test,1),tf.float64)
 myindTrue = tf.argmax(y_input,1)
 #myacc = tf.equal(myind,myindTrue)
-myrealloss = -tf.reduce_mean(y_input * tf.log(y_test), reduction_indices=[1])
+#myrealloss = -tf.reduce_mean(y_input * tf.log(y_test), reduction_indices=[1])
 #myloss = tf.reduce_mean(tf.losses.sparse_softmax_cross_entropy_with_logits(logits=myind,labels=myindTrue)) # calculate loss between prediction and actual
+myrealloss = tf.reduce_mean(tf.losses.absolute_difference(labels = y_input, predictions = y_test))
 train_step = tf.train.AdamOptimizer(learning_rate=0.001).minimize(myrealloss, name="gradDescent")
 # switched adam to gradientdescent and removed epsilon of e-3
 
@@ -326,13 +327,14 @@ with tf.Session(config=config) as sess:
     yans = np.array(yans, dtype=np.float64)
     yans2 = np.array(yans2, dtype=np.float64)
    # yans2[0] = np.array([i for i in range(120)], dtype=np.float)
-    print (yans2.shape)
+    #print (yans2.shape)
     while epochs < 1000000:
             [summary2, acc, res] = sess.run([merge, accuracy, y_test], feed_dict={x: xans2, y_input: yans2})
             train_writer2.add_summary(summary2, epochs)
             if epochs % 100 == 0:
                 [summaryOut, train_accuracy, something, true_val, c, ind, ind2, yin] = sess.run([merge, accuracy, y_test, y_input,
-                                            cross_entropy, myind, myindTrue, y_input], feed_dict={x: xans, y_input: yans})
+                                            myrealloss, myind, myindTrue, y_input], feed_dict={x: xans, y_input: yans})
+                print(c)
                 if c < loss:
                   #saver.save(sess, './my_test_model', global_step=epochs)
                   #np.savetxt("output_fourier_check.csv", true_val, delimiter=",")
@@ -341,13 +343,13 @@ with tf.Session(config=config) as sess:
                 numpy_accuracy = (a <= 1e-5).mean()   # changed 1e-5 to 1
                 try:
                     # print (v3)
-                    print('step %d, training accuracy %g' % (epochs, train_accuracy))
-                    print('step %d, training accuracy %g' % (epochs, numpy_accuracy))
+                    #print('step %d, training accuracy %g' % (epochs, train_accuracy))
+                    #print('step %d, training accuracy %g' % (epochs, numpy_accuracy))
                     #print('step %d, idk accuracy %g' % (epochs, myacc2))
-                    #print('ind %d, index true %g' % (ind, ind2))
-                    print('validation accuracy %g' % acc)
-                    print (something)
-                    print(yin)
+                    print('ind %d, index true %g' % (ind[0], ind2[0]))
+                    #print('validation accuracy %g' % acc)
+                    #print (something)
+                    #print(yin)
                     print (c)
                 except OSError as e:
                     pass
