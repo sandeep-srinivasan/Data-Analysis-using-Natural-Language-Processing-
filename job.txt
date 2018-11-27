@@ -1,0 +1,8 @@
+#PBS -l nodes=1:ppn=28:gpus=1:default
+#PBS -l walltime=1:00:00
+#PBS -j oe
+#PBS -S /bin/bash
+ 
+cd $PBS_O_WORKDIR
+module load python/3.6 
+python Semester_project_part3_clustering.py
