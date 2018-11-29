@@ -88,6 +88,8 @@ listtopics=set()
 listplaces=set()
 listwords = set()
 article_tries = [None]*21578
+articleTopics = [None]*21578
+articlePlaces = [None]*21578
 # counts for no topics and no places in articles
 cntnotop=0 
 cntnoplc=0 
@@ -126,7 +128,7 @@ for i in range(0,22):
         for k in range(0,len(yTopic)):
             lt = yTopic[k]
 
-         #   article_topics = Node()
+            article_topics = []
             topics = re.findall(r'<D>(.*?)</D>', lt, re.DOTALL)
             # Make sure D tag does not included as part of the topic name
             if(len(topics)==0):
@@ -145,7 +147,7 @@ for i in range(0,22):
                     # its been found already in the trie so increase the value by 1
                     update(trieTopics, l, 1)
               #      update(article_topics, l, 1)
-                #article_topics.append(l)
+                article_topics.append(l)
                 listtopics.add(l)
         
         article_places = []
@@ -181,7 +183,8 @@ for i in range(0,22):
                     update(article_words, l, 1)
                 listwords.add(l)
         #print (article_topics)
-        article_tries[articleCount] = [article_words]
+        #article_tries[articleCount] = [article_words]
+        articlePlaces[articleCount] = article_places
         if(article_words == None):
                 print ("found you")
         articleCount += 1
@@ -208,21 +211,22 @@ listwords = list(listwords)
 
 # Some tests for "finds" on the tries are shown below
 
-print (find(trieLoc, "usa"))
+#print (find(trieLoc, "usa"))
 
 
 # In[ ]:
 
-print(np.shape(article_tries[1]))
-print(np.dtype(article_tries))
 
+'''
 print(find(article_tries[10][0], 'a'))
 for i in range(len(article_tries)):
     article_tries[i] = find_multiple(article_tries[i][0], listwords)
 article_tries =[i if i[0] is not None else (0, i[1]) for i in article_tries]
-np.savetxt("article_tries.csv", article_tries, delimiter=",")
-
-
+print((article_tries[1]))
+#print(np.dtype(article_tries[1][0]))
+np.savetxt("article_tries.csv", article_tries, delimiter=",", fmt='%s')
+'''
+np.savetxt("article_places.csv", articlePlaces, delimiter=",", fmt='%s')
 
 # In[ ]:
 
@@ -263,7 +267,7 @@ trieVals = find_multiple(trieTopics, listtopics)
     for i in range(len(listtopics)):
         writer.writerow({'topic': topictrie[0][i], 'value': topictrie[1][i]})'''
 #np.savetxt("output_trei_topics.csv", topictrie, delimiter=",")
-print (len(find_multiple(article_tries[0][2], listwords)))
+#print (len(find_multiple(article_tries[0][2], listwords)))
 
 
 # In[ ]:
