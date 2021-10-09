@@ -1,0 +1,1 @@
+Pre-processing, Classification and Clustering of the Reuters-21578 Text Categorization Collection Data Set, a moderate-sized dataset using tree data structure, Tf-idf (term frequency, inverse document frequency) and Density-based spatial clustering of applications with noise (DBSCAN) techniques. 
